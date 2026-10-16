@@ -6,6 +6,10 @@ A Claude Code mod that frames each turn’s final answer, keeping links, selecti
 
 Intermediate updates, thinking, and tool calls stay available. The mod only changes how final answers look; model output and saved conversations stay intact.
 
+![Claude Code with a rounded border around the final answer, while progress updates and tool activity remain visible above it.](docs/images/for-your-eyes-desktop.jpg)
+
+*For Your Eyes in Claude Code on macOS, using a sample conversation.*
+
 ## Install
 
 Requires a Claude Code build with TypeScript mods support and Python 3 available as `python3`. Tested with Claude Code **2.1.300** and the Claude desktop app on macOS. This is a Claude **Code** mod, not a browser extension or a plugin for ordinary claude.ai chats.
