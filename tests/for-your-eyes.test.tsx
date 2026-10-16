@@ -21,7 +21,7 @@ const callTool = ($: Engine, uuid: string, toolUseId: string) =>
 
 const runCommand = ($: Engine) =>
   $.command.run({
-    command: 'final-only',
+    command: 'for-your-eyes',
     args: '',
     origin: { kind: 'composer' },
     presentation: { isFullscreen: true, columns: 100 },
@@ -60,7 +60,7 @@ test("a turn's final answer is boxed; its other blocks are drawn as they are", S
   for (const surface of SURFACES) {
     // While the turn runs, no block is known to be the answer.
     const last = await $.ui.mount({
-      plugin: 'final-only', surface, component: 'AssistantMessage', requestId: 'a3', props: text('Here is the answer.'),
+      plugin: 'for-your-eyes', surface, component: 'AssistantMessage', requestId: 'a3', props: text('Here is the answer.'),
     })
     expect(await boxOf(last)).toBeUndefined()
     await last.unmount()
@@ -70,10 +70,10 @@ test("a turn's final answer is boxed; its other blocks are drawn as they are", S
 
   for (const surface of SURFACES) {
     const update = await $.ui.mount({
-      plugin: 'final-only', surface, component: 'AssistantMessage', requestId: 'a1', props: text('Pulling the data now.'),
+      plugin: 'for-your-eyes', surface, component: 'AssistantMessage', requestId: 'a1', props: text('Pulling the data now.'),
     })
     const last = await $.ui.mount({
-      plugin: 'final-only', surface, component: 'AssistantMessage', requestId: 'a3', props: text('Here is the answer.'),
+      plugin: 'for-your-eyes', surface, component: 'AssistantMessage', requestId: 'a3', props: text('Here is the answer.'),
     })
     expect(await boxOf(update)).toBeUndefined()
     expect(await update.find({ text: 'Pulling the data now.' })).toBeDefined()
@@ -89,7 +89,7 @@ test("a turn's final answer is boxed; its other blocks are drawn as they are", S
   }
 })
 
-test('/final-only turns the box off and on', SLOW, async ($, on) => {
+test('/for-your-eyes turns the box off and on', SLOW, async ($, on) => {
   engine(on)
   await $.session.start({ cwd: '/', surface: 'terminal', isInteractive: true })
   await $.turn.start({ text: 'hi', turnId: 't1' })
@@ -97,7 +97,7 @@ test('/final-only turns the box off and on', SLOW, async ($, on) => {
   await $.turn.complete({ answer: 'Hello.', durationMs: 5, isAborted: false, turnId: 't1', reason: 'answer' })
 
   const only = await $.ui.mount({
-    plugin: 'final-only', surface: 'terminal', component: 'AssistantMessage', requestId: 'c1', props: text('Hello.'),
+    plugin: 'for-your-eyes', surface: 'terminal', component: 'AssistantMessage', requestId: 'c1', props: text('Hello.'),
   })
   expect(await boxOf(only)).toBeDefined()
   expect((await runCommand($)).text).toMatch(/highlight is off/)
@@ -115,10 +115,10 @@ test("a subagent's text is never taken for the answer", SLOW, async ($, on) => {
   await $.turn.complete({ answer: 'Main update.', durationMs: 5, isAborted: false, turnId: 't1', reason: 'answer' })
 
   const sub = await $.ui.mount({
-    plugin: 'final-only', surface: 'terminal', component: 'AssistantMessage', requestId: 's2', props: text('Sub report.'),
+    plugin: 'for-your-eyes', surface: 'terminal', component: 'AssistantMessage', requestId: 's2', props: text('Sub report.'),
   })
   const main = await $.ui.mount({
-    plugin: 'final-only', surface: 'terminal', component: 'AssistantMessage', requestId: 's1', props: text('Main update.'),
+    plugin: 'for-your-eyes', surface: 'terminal', component: 'AssistantMessage', requestId: 's1', props: text('Main update.'),
   })
   expect(await boxOf(sub)).toBeUndefined()
   expect(await boxOf(main)).toBeDefined()
@@ -148,7 +148,7 @@ test('a desktop item named by its API message is found through the transcript', 
   await $.turn.complete({ answer: 'Here is the answer.', durationMs: 3_000, isAborted: false, turnId: 't1', reason: 'answer' })
 
   const mount = (requestId: string, body: string) =>
-    $.ui.mount({ plugin: 'final-only', surface: 'desktop', component: 'AssistantMessage', requestId, props: text(body) })
+    $.ui.mount({ plugin: 'for-your-eyes', surface: 'desktop', component: 'AssistantMessage', requestId, props: text(body) })
   expect(await boxOf(await mount('msg_A-t0', 'Pulling the data now.'))).toBeUndefined()
   expect(await boxOf(await mount('msg_B-t0', 'Here is the answer.'))).toBeDefined()
 })
@@ -174,7 +174,7 @@ test('a new chat finds its transcript by the session id and folder, and boxes it
   await $.turn.complete({ answer: 'Hi there.', durationMs: 5, isAborted: false, turnId: 't1', reason: 'answer' })
 
   const answer = await $.ui.mount({
-    plugin: 'final-only', surface: 'desktop', component: 'AssistantMessage', requestId: 'msg_N-t0', props: text('Hi there.'),
+    plugin: 'for-your-eyes', surface: 'desktop', component: 'AssistantMessage', requestId: 'msg_N-t0', props: text('Hi there.'),
   })
   expect(await boxOf(answer)).toBeDefined()
   expect(await answer.find({ text: 'Hi there.' })).toBeDefined()
@@ -195,7 +195,7 @@ test("the turn's last block is boxed even before the transcript file holds it", 
   await $.turn.complete({ answer: 'Here is the answer.', durationMs: 5, isAborted: false, turnId: 't1', reason: 'answer' })
 
   const mount = (requestId: string, body: string) =>
-    $.ui.mount({ plugin: 'final-only', surface: 'desktop', component: 'AssistantMessage', requestId, props: text(body) })
+    $.ui.mount({ plugin: 'for-your-eyes', surface: 'desktop', component: 'AssistantMessage', requestId, props: text(body) })
   expect(await boxOf(await mount('msg_Z-t0', 'Here is the answer.'))).toBeDefined()
   expect(await boxOf(await mount('msg_Y-t0', 'Checking the log.'))).toBeUndefined()
 })
@@ -225,7 +225,7 @@ test('desktop keeps the native engine response and all its render props', SLOW, 
   await say($, 'native-final', body)
   await $.turn.complete({ answer: body, durationMs: 5, isAborted: false, turnId: 'native', reason: 'answer' })
   const props = { text: body, isFirstOfReply: true, onScreen: null }
-  const answer = await $.ui.mount({ plugin: 'final-only', surface: 'desktop', component: 'AssistantMessage',
+  const answer = await $.ui.mount({ plugin: 'for-your-eyes', surface: 'desktop', component: 'AssistantMessage',
     requestId: 'native-final', props })
   // The real engine reference is validated by Claude's render contract; a mock
   // Text alone would miss forbidden wrapper props and duplicate response nodes.
@@ -248,7 +248,7 @@ test('summary rows are never restyled, even when their id matches an answer', SL
   await $.turn.start({ text: 'go', turnId: 'summary-turn' })
   await say($, 'summary-row', 'Done.')
   await $.turn.complete({ answer: 'Done.', durationMs: 5, isAborted: false, turnId: 'summary-turn', reason: 'answer' })
-  const summary = await $.ui.mount({ plugin: 'final-only', surface: 'desktop', component: 'AssistantMessage',
+  const summary = await $.ui.mount({ plugin: 'for-your-eyes', surface: 'desktop', component: 'AssistantMessage',
     requestId: 'summary-row', props: { ...text('Done.'), isSummary: true } })
   expect(await summary.find({ text: 'Done.' })).toBeDefined()
   expect(await boxOf(summary)).toBeUndefined()
@@ -265,7 +265,7 @@ test('ambiguous repeated text is not mistaken for a different final answer', SLO
   await callTool($, 'repeat-tool', 'tu-repeat')
   await say($, 'repeat-final', 'Done.')
   await $.turn.complete({ answer: 'Done.', durationMs: 5, isAborted: false, turnId: 'repeat', reason: 'answer' })
-  const earlier = await $.ui.mount({ plugin: 'final-only', surface: 'desktop', component: 'AssistantMessage',
+  const earlier = await $.ui.mount({ plugin: 'for-your-eyes', surface: 'desktop', component: 'AssistantMessage',
     requestId: 'msg_UNKNOWN-t0', props: text('Done.') })
   expect(await earlier.find({ text: 'Done.' })).toBeDefined()
   expect(await boxOf(earlier)).toBeUndefined()
@@ -280,7 +280,7 @@ test('word boundaries are preserved in the live text fallback', SLOW, async ($, 
   await $.turn.start({ text: 'go', turnId: 'words' })
   await say($, 'words-final', 'a bc')
   await $.turn.complete({ answer: 'a bc', durationMs: 5, isAborted: false, turnId: 'words', reason: 'answer' })
-  const earlier = await $.ui.mount({ plugin: 'final-only', surface: 'desktop', component: 'AssistantMessage',
+  const earlier = await $.ui.mount({ plugin: 'for-your-eyes', surface: 'desktop', component: 'AssistantMessage',
     requestId: 'msg_OTHER-t0', props: text('ab c') })
   expect(await earlier.find({ text: 'ab c' })).toBeDefined()
   expect(await boxOf(earlier)).toBeUndefined()
@@ -295,7 +295,7 @@ test('a settled answer is not redrawn by the delayed transcript retry', SLOW, as
   await $.turn.start({ text: 'go', turnId: 'settled' })
   await say($, 'settled-final', 'Select this answer.')
   await $.turn.complete({ answer: 'Select this answer.', durationMs: 5, isAborted: false, turnId: 'settled', reason: 'answer' })
-  const answer = await $.ui.mount({ plugin: 'final-only', surface: 'desktop', component: 'AssistantMessage',
+  const answer = await $.ui.mount({ plugin: 'for-your-eyes', surface: 'desktop', component: 'AssistantMessage',
     requestId: 'settled-final', props: text('Select this answer.') })
   expect(await boxOf(answer)).toBeDefined()
   const before = invalidations

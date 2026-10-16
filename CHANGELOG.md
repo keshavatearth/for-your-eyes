@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.0 — 2026-10-17
+
+- Rename the mod, command, and repository to **For Your Eyes** (`for-your-eyes`).
+- Add the tagline “Put the final answer in focus” and migration instructions for existing Final Only installations.
+- Keep the rounded border and native interaction fixes from 0.3.3.
+
 ## 0.3.3 — 2026-10-17
 
 - Preserve the full rounded border and original Markdown. Use a transparent interior on desktop and other remote surfaces so native text selection stays visible.

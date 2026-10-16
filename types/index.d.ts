@@ -9,8 +9,8 @@ export type TurnRecord = {
 
 declare module 'claude-code' {
   interface PluginState {
-    'final-only': {
-      /** Whether the highlight is on at all (`/final-only` flips it). */
+    'for-your-eyes': {
+      /** Whether the highlight is on at all (`/for-your-eyes` flips it). */
       isOn: boolean
       /** The main loop's running turn, or the last one once it ended. */
       currentTurn: string

@@ -1,28 +1,42 @@
-# Final Only for Claude Code
+# For Your Eyes
 
-Make each turn’s final answer easier to find, while keeping links, selection, copy, and scrolling native to Claude.
+**Put the final answer in focus.**
 
-Despite the name, this mod **highlights the final answer**. It leaves intermediate updates, thinking, and tool calls available. It does not change what the model writes or modify saved conversations.
+A Claude Code mod that frames each turn’s final answer, keeping links, selection, copy, and scrolling native to Claude.
+
+Intermediate updates, thinking, and tool calls stay available. The mod only changes how final answers look; model output and saved conversations stay intact.
 
 ## Install
 
 Requires a Claude Code build with TypeScript mods support and Python 3 available as `python3`. Tested with Claude Code **2.1.300** and the Claude desktop app on macOS. This is a Claude **Code** mod, not a browser extension or a plugin for ordinary claude.ai chats.
 
 ```sh
-claude plugin marketplace add keshavatearth/claude-final-only
-claude plugin install final-only@keshav-mods
+claude plugin marketplace add keshavatearth/for-your-eyes
+claude plugin install for-your-eyes@keshav-mods
 ```
 
-Open a Code session in Claude Desktop or the terminal. The highlight is on by default. Run `/final-only` to turn it off or back on; the preference is saved locally.
+Open a Code session in Claude Desktop or the terminal. The highlight is on by default. Run `/for-your-eyes` to turn it off or back on; the preference is saved locally.
 
 Update an existing installation with:
 
 ```sh
 claude plugin marketplace update keshav-mods
-claude plugin update final-only@keshav-mods
+claude plugin update for-your-eyes@keshav-mods
 ```
 
 Claude Desktop can reload an updated mod in an idle session. If your client does not, reopen the session. A terminal session needs to be restarted to load an installed update.
+
+## Upgrading from Final Only
+
+Version 0.4.0 renames the mod and command to `for-your-eyes`. Remove the old installation before installing the new name so only one copy is active:
+
+```sh
+claude plugin uninstall final-only@keshav-mods --keep-data
+claude plugin marketplace update keshav-mods
+claude plugin install for-your-eyes@keshav-mods
+```
+
+The renamed mod starts with highlighting on. If you previously kept it off, run `/for-your-eyes` once. Older GitHub links redirect to this repository.
 
 ## Appearance and interactions
 
@@ -45,8 +59,8 @@ The mod makes no network requests or model calls. It reads the current transcrip
 ## Development
 
 ```sh
-git clone https://github.com/keshavatearth/claude-final-only.git
-cd claude-final-only
+git clone https://github.com/keshavatearth/for-your-eyes.git
+cd for-your-eyes
 ./scripts/check.sh
 ```
 
@@ -54,7 +68,7 @@ To try a local checkout, start `claude --plugin-dir .`. Avoid loading a second c
 
 The mod tests exercise the engine’s real hook chain and returned render tree, including the native-engine response contract, live and resumed messages, summaries, ambiguous text, and the toggle. They do not emulate the desktop browser. For a release, also check a real desktop answer: select across paragraphs, copy the selection, open a web link and local file link, copy a code block, and scroll a long answer with the highlight on and off.
 
-Mods are an evolving Claude Code API. See [Anthropic’s mods reference](https://code.claude.com/docs/en/plugins/mods/reference). If an update changes the rendering contract, `/final-only` restores ordinary rendering immediately.
+Mods are an evolving Claude Code API. See [Anthropic’s mods reference](https://code.claude.com/docs/en/plugins/mods/reference). If an update changes the rendering contract, `/for-your-eyes` restores ordinary rendering immediately.
 
 ## License
 

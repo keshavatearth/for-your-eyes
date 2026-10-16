@@ -1,4 +1,4 @@
-"""Index a Claude Code transcript by turn, for the final-only mod.
+"""Index a Claude Code transcript by turn, for the for-your-eyes mod.
 
 Reads the session's .jsonl transcript and prints one JSON object:
   turns: one per turn, {id, head, final, ms, items}

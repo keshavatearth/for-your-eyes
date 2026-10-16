@@ -6,7 +6,7 @@
   "description": "Keshav's own Claude Code mods.",
   "plugins": [
     {
-      "name": "final-only",
+      "name": "for-your-eyes",
       "source": "./"
     }
   ]

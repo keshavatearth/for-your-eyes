@@ -1,12 +1,12 @@
 {
-  "name": "final-only",
-  "version": "0.3.3",
-  "description": "Highlights each turn's final answer while preserving native links, text selection, copy controls and scrolling.",
+  "name": "for-your-eyes",
+  "version": "0.4.0",
+  "description": "Put the final answer in focus. A rounded border highlights each turn’s final answer while preserving native interactions.",
   "author": {
     "name": "Keshav"
   },
-  "homepage": "https://github.com/keshavatearth/claude-final-only",
-  "repository": "https://github.com/keshavatearth/claude-final-only",
+  "homepage": "https://github.com/keshavatearth/for-your-eyes",
+  "repository": "https://github.com/keshavatearth/for-your-eyes",
   "license": "MIT",
   "types": "./types/index.d.ts"
 }

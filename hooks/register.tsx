@@ -1,14 +1,14 @@
 import { atom, memberOf, read, update } from 'claude-code'
 import type { EngineInterface, Register } from 'claude-code'
 
-const isOn = atom({ plugin: 'final-only', key: 'isOn' } as const, true)
-const currentTurn = atom({ plugin: 'final-only', key: 'currentTurn' } as const, '')
-const textTurn = atom({ plugin: 'final-only', key: 'textTurn' } as const, '')
-const answerTurn = atom({ plugin: 'final-only', key: 'answerTurn' } as const, null)
+const isOn = atom({ plugin: 'for-your-eyes', key: 'isOn' } as const, true)
+const currentTurn = atom({ plugin: 'for-your-eyes', key: 'currentTurn' } as const, '')
+const textTurn = atom({ plugin: 'for-your-eyes', key: 'textTurn' } as const, '')
+const answerTurn = atom({ plugin: 'for-your-eyes', key: 'answerTurn' } as const, null)
 
-const COMMAND = 'final-only'
+const COMMAND = 'for-your-eyes'
 // The manifest's version, recorded with each load.
-const VERSION = '0.3.3'
+const VERSION = '0.4.0'
 
 // Theme keys keep the outline readable in light and dark modes.
 // Desktop uses an unfilled outline: a background on the shadow-tree wrapper
