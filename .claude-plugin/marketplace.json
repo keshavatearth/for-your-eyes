@@ -1,0 +1,13 @@
+{
+  "name": "keshav-mods",
+  "owner": {
+    "name": "Keshav"
+  },
+  "description": "Keshav's own Claude Code mods.",
+  "plugins": [
+    {
+      "name": "final-only",
+      "source": "./"
+    }
+  ]
+}

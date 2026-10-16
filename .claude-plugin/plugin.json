@@ -1,0 +1,12 @@
+{
+  "name": "final-only",
+  "version": "0.3.3",
+  "description": "Highlights each turn's final answer while preserving native links, text selection, copy controls and scrolling.",
+  "author": {
+    "name": "Keshav"
+  },
+  "homepage": "https://github.com/keshavatearth/claude-final-only",
+  "repository": "https://github.com/keshavatearth/claude-final-only",
+  "license": "MIT",
+  "types": "./types/index.d.ts"
+}

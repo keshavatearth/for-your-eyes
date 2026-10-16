@@ -1,0 +1,11 @@
+# Claude generates these for the installed engine; never publish local state.
+.claude-plugin/types/
+node_modules/
+__pycache__/
+*.py[cod]
+.DS_Store
+.env
+.env.*
+*.log
+*.jsonl
+dist/
