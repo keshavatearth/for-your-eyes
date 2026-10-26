@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.4.3 — 2026-10-26
+
+- Normalize angle-bracket local file destinations in active Desktop final answers into ordinary Markdown destinations, encoding spaces and parentheses. This addresses a reproduced Desktop file-open failure while preserving the rounded border and native response.
+- Preserve existing escapes, external URLs, images, and code examples. Other surfaces and saved transcripts are unchanged.
+- Add syntax regression tests and a native-engine render-contract test for the targeted rewrite.
+- Verify the fix in Claude Desktop before publication: three previously failing fixture controls and a real document open their contents with highlighting on. See [desktop verification](docs/desktop-verification.md).
+
 ## 0.4.2 — 2026-10-26
 
 - Restore the v0.4.0 rendering behavior, including borders on answers containing links or code.

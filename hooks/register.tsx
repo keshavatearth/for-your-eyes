@@ -1,5 +1,6 @@
 import { atom, memberOf, read, update } from 'claude-code'
 import type { EngineInterface, Register } from 'claude-code'
+import { desktopFileLinks } from './file-links'
 
 const isOn = atom({ plugin: 'for-your-eyes', key: 'isOn' } as const, true)
 const currentTurn = atom({ plugin: 'for-your-eyes', key: 'currentTurn' } as const, '')
@@ -8,7 +9,7 @@ const answerTurn = atom({ plugin: 'for-your-eyes', key: 'answerTurn' } as const,
 
 const COMMAND = 'for-your-eyes'
 // The manifest's version, recorded with each load.
-const VERSION = '0.4.2'
+const VERSION = '0.4.3'
 
 // Theme keys keep the outline readable in light and dark modes.
 // Desktop uses an unfilled outline: a background on the shadow-tree wrapper
@@ -252,6 +253,9 @@ export const register: Register = on => {
     const row = await rowOf($, e.requestId, e.props.text)
     if (row === undefined || !(await isAnswer($, row))) return next(e)
 
+    const text = e.surface === 'desktop' ? desktopFileLinks(e.props.text) : e.props.text
+    const drawing = text === e.props.text ? e : { ...e, props: { ...e.props, text } }
+
     // Decorate exactly one unchanged engine response. Do not duplicate its
     // text, add a Markdown leaf, or put it under a scrolling/clipping container.
     const { Box } = $.ui.resolve(e)
@@ -263,7 +267,7 @@ export const register: Register = on => {
         {...(e.surface === 'terminal' ? { backgroundColor: ANSWER_BACKGROUND } : {})}
         paddingX={1}
       >
-        {await next(e)}
+        {await next(drawing)}
       </Box>
     )
   })

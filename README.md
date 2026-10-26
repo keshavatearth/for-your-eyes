@@ -48,7 +48,9 @@ The renamed mod starts with highlighting on. If you previously kept it off, run 
 - **Terminal:** final answers keep the rounded, accent-colored box and theme-aware background.
 - **Other remote surfaces:** use the unfilled outline too; VS Code and mobile have automated render-contract coverage but have not been checked manually.
 
-The border wraps exactly one unchanged native response. The mod does not turn answers into quotes, duplicate their text, replace links or code blocks, add click handlers, or constrain their height/scrolling. Normal response actions remain Claude’s. Display styling does not change the saved response or clipboard contents.
+The border wraps exactly one native response. The mod does not turn answers into quotes, duplicate their text, replace native controls, add click handlers, or constrain their height/scrolling. Saved responses remain intact; selection and copy use Claude’s native controls.
+
+On Desktop, v0.4.3 also normalizes local file-link destinations written in angle brackets: `[file](</path/with spaces.md>)` is drawn as `[file](/path/with%20spaces.md)`. The app otherwise treats that angle-bracket form as a missing file. This applies only to active final-answer rendering; saved messages, web links, images, and code examples remain intact. Relative file targets resolve from the session’s working folder, so a link still needs the correct path.
 
 Version 0.3.3 removes the desktop background layer that interfered with visible selection, avoids unnecessary delayed redraws of settled answers, and hardens message identification. See the [mods render API](https://code.claude.com/docs/en/plugins/mods/interface) for the wrapper contract.
 

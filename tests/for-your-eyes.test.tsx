@@ -242,6 +242,46 @@ test('desktop keeps the native engine response and all its render props', SLOW, 
   expect(received).toEqual(props)
 })
 
+test('only active desktop final answers normalize angle-bracket file destinations', SLOW, async ($, on) => {
+  mock.store(on)
+  mock.clock(on)
+  on('session.start', ($, e) => ({ cwd: e.cwd }))
+  on('command.register', ($, e) => ({ value: { command: e.name } }))
+  on('turn.start', ($, e) => ({ turnId: e.turnId }))
+  on('turn.complete', ($, e) => ({ text: e.answer }))
+  let received: unknown
+  on('ui.render', { component: 'AssistantMessage' }, ($, e) => {
+    received = e.props
+    return { type: 'engine', ref: 0 }
+  })
+  const body = '[bets](</Users/example/Client Work/bets.md>)'
+  const original = { text: body, isFirstOfReply: true, onScreen: null }
+  const corrected = { ...original, text: '[bets](/Users/example/Client%20Work/bets.md)' }
+  await $.session.start({ cwd: '/', surface: 'desktop', isInteractive: false })
+  await $.turn.start({ text: 'go', turnId: 'file-link' })
+  await say($, 'link-update', body)
+  await say($, 'link-final', body)
+  await $.turn.complete({ answer: body, durationMs: 5, isAborted: false, turnId: 'file-link', reason: 'answer' })
+
+  for (const surface of SURFACES) {
+    const answer = await $.ui.mount({ plugin: 'for-your-eyes', surface, component: 'AssistantMessage',
+      requestId: 'link-final', props: original })
+    expect(received).toEqual(surface === 'desktop' ? corrected : original)
+    expect(await answer.drawn()).toMatchObject({ type: 'Box', children: [{ type: 'engine', ref: 0 }] })
+    await answer.unmount()
+  }
+  const update = await $.ui.mount({ plugin: 'for-your-eyes', surface: 'desktop', component: 'AssistantMessage',
+    requestId: 'link-update', props: original })
+  expect(await update.drawn()).toEqual({ type: 'engine', ref: 0 })
+  expect(received).toEqual(original)
+  await update.unmount()
+  await runCommand($)
+  const off = await $.ui.mount({ plugin: 'for-your-eyes', surface: 'desktop', component: 'AssistantMessage',
+    requestId: 'link-final', props: original })
+  expect(await off.drawn()).toEqual({ type: 'engine', ref: 0 })
+  expect(received).toEqual(original)
+})
+
 test('summary rows are never restyled, even when their id matches an answer', SLOW, async ($, on) => {
   engine(on)
   await $.session.start({ cwd: '/', surface: 'desktop', isInteractive: false })
