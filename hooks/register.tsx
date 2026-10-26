@@ -1,5 +1,6 @@
 import { atom, memberOf, read, update } from 'claude-code'
 import type { EngineInterface, Register } from 'claude-code'
+import { needsNativeRendering } from './render-policy'
 
 const isOn = atom({ plugin: 'for-your-eyes', key: 'isOn' } as const, true)
 const currentTurn = atom({ plugin: 'for-your-eyes', key: 'currentTurn' } as const, '')
@@ -8,7 +9,7 @@ const answerTurn = atom({ plugin: 'for-your-eyes', key: 'answerTurn' } as const,
 
 const COMMAND = 'for-your-eyes'
 // The manifest's version, recorded with each load.
-const VERSION = '0.4.0'
+const VERSION = '0.4.1'
 
 // Theme keys keep the outline readable in light and dark modes.
 // Desktop uses an unfilled outline: a background on the shadow-tree wrapper
@@ -135,7 +136,7 @@ export const register: Register = on => {
     resetIndex()
     await $.command.register({
       name: COMMAND,
-      description: "Highlight each turn's final answer with a rounded border (run again to turn it off)",
+      description: 'Highlight final answers where native interactions can be preserved (run again to turn it off)',
       immediate: true,
     })
 
@@ -172,7 +173,7 @@ export const register: Register = on => {
 
     return {
       text: now
-        ? "Final-answer highlight is on: each turn's final answer is bordered."
+        ? 'Final-answer highlight is on. Remote answers with links or code keep their native rendering.'
         : 'Final-answer highlight is off: final answers are drawn like every other message.',
     }
   })
@@ -249,6 +250,9 @@ export const register: Register = on => {
   // The answer, in a box of its own; every other block as the engine draws it.
   on('ui.render', { component: 'AssistantMessage' }, async ($, e, next) => {
     if (!(await read($, isOn)) || e.props.isSummary) return next(e)
+    // Return the engine result directly, without even a fragment/Box around
+    // it. Remote wrappers reparent the native response into a plugin slot.
+    if (needsNativeRendering(e.surface, e.props.text)) return next(e)
     const row = await rowOf($, e.requestId, e.props.text)
     if (row === undefined || !(await isAnswer($, row))) return next(e)
 

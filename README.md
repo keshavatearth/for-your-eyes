@@ -2,13 +2,13 @@
 
 **Put the final answer in focus.**
 
-A Claude Code mod that frames each turn’s final answer, keeping links, selection, copy, and scrolling native to Claude.
+A Claude Code mod that frames final answers. On desktop and other remote clients, answers containing links or code keep Claude’s original rendering without a border.
 
 Intermediate updates, thinking, and tool calls stay available. The mod only changes how final answers look; model output and saved conversations stay intact.
 
 ![Claude Code with a rounded border around the final answer, while progress updates and tool activity remain visible above it.](docs/images/for-your-eyes-desktop.jpg)
 
-*For Your Eyes in Claude Code on macOS, using a sample conversation.*
+*The rounded border in Claude Code on macOS, captured with v0.4.0. Since v0.4.1, answers containing links or code are left unframed to protect native interactions.*
 
 ## Install
 
@@ -44,13 +44,13 @@ The renamed mod starts with highlighting on. If you previously kept it off, run 
 
 ## Appearance and interactions
 
-- **Desktop:** final answers have a full rounded accent border. The interior stays transparent so Claude’s selection highlight remains visible.
+- **Desktop:** plain-text final answers have a full rounded accent border with a transparent interior. Answers containing links, file references in inline code, code blocks, or bare URLs/paths stay unframed in Claude’s original rendering.
 - **Terminal:** final answers keep the rounded, accent-colored box and theme-aware background.
-- **Other remote surfaces:** use the unfilled outline too; VS Code and mobile have automated render-contract coverage but have not been checked manually.
+- **Other remote surfaces:** use the same conservative rule; VS Code and mobile have automated render-contract coverage but have not been checked manually.
 
-The border wraps exactly one unchanged native response. The mod does not turn answers into quotes, duplicate their text, replace links or code blocks, add click handlers, or constrain their height/scrolling. Normal response actions remain Claude’s. Display styling does not change the saved response or clipboard contents.
+Where a border is applied, it wraps exactly one unchanged native response. Interactive remote answers are returned directly, without a wrapper: retaining an engine reference inside a box still moves the response into a separate desktop render container. The mod does not rewrite Markdown, guess file locations, add click handlers, or alter clipboard contents.
 
-Version 0.3.3 removes the desktop background layer that interfered with visible selection, avoids unnecessary delayed redraws of settled answers, and hardens message identification. See the [mods render API](https://code.claude.com/docs/en/plugins/mods/interface) for the wrapper contract.
+Version 0.4.1 adds this compatibility safeguard after reports of file links falling back to inline code. A native-only response removes the mod’s wrapper from the interaction path; it cannot repair a missing file, a plain filename that Claude does not recognize, or a client that cannot open files from an inactive session. See the [mods render API](https://code.claude.com/docs/en/plugins/mods/interface) for the wrapper contract.
 
 ## How it works
 

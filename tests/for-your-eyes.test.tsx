@@ -200,7 +200,7 @@ test("the turn's last block is boxed even before the transcript file holds it", 
   expect(await boxOf(await mount('msg_Y-t0', 'Checking the log.'))).toBeUndefined()
 })
 
-test('desktop keeps the native engine response and all its render props', SLOW, async ($, on) => {
+test('plain desktop answers wrap exactly one native engine response', SLOW, async ($, on) => {
   mock.store(on)
   mock.clock(on)
   on('session.start', ($, e) => ({ cwd: e.cwd }))
@@ -214,11 +214,10 @@ test('desktop keeps the native engine response and all its render props', SLOW, 
   })
   const body = [
     '## Final result', '',
-    '[Website](https://example.com) and [file](/tmp/example.md).', '',
+    'The changes are ready.', '',
     '- First item', '  - Nested item', '',
     '| Name | Value |', '| --- | --- |', '| Result | 42 |', '',
-    '```js', 'console.log("hello");', '', '```', '',
-    '> Existing quote', '', 'Last paragraph.',
+    'Last paragraph.',
   ].join('\n')
   await $.session.start({ cwd: '/', surface: 'desktop', isInteractive: false })
   await $.turn.start({ text: 'go', turnId: 'native' })
@@ -240,6 +239,68 @@ test('desktop keeps the native engine response and all its render props', SLOW, 
   await runCommand($)
   expect(await answer.drawn()).toMatchObject(expected)
   expect(received).toEqual(props)
+})
+
+test('remote file links, web links, and code stay at the original native render site', SLOW, async ($, on) => {
+  mock.store(on)
+  mock.clock(on)
+  on('session.start', ($, e) => ({ cwd: e.cwd }))
+  on('command.register', ($, e) => ({ value: { command: e.name } }))
+  on('turn.start', ($, e) => ({ turnId: e.turnId }))
+  on('turn.complete', ($, e) => ({ text: e.answer }))
+  let received: unknown
+  on('ui.render', { component: 'AssistantMessage' }, ($, e) => {
+    received = e.props
+    return { type: 'engine', ref: 0 }
+  })
+  const cases = [
+    'Updated `bets.md`.',
+    '[bets.md](</Users/example/Client Work/bets.md>)',
+    '[bets.md](/Users/example/Client%20Work/bets.md)',
+    '[`bets.md`](./bets.md)',
+    '[Source](./src/app.ts#L12)',
+    '[notes][file]\n\n[file]: ../notes.md',
+    'Open </Users/example/Client Work/bets.md>.',
+    'Open /Users/example/notes.md.',
+    'Open ~/notes.md.',
+    'Open ./notes.md.',
+    'Open ../notes.md.',
+    'Open C:\\work\\notes.md.',
+    'Open \\\\server\\share\\notes.md.',
+    'file:///Users/example/notes.md',
+    '[Website](https://example.com)',
+    'See https://example.com.',
+    'See www.example.com.',
+    'See <https://example.com>.',
+    'Contact mailto:hello@example.com.',
+    '![Preview](./preview.png)',
+    '```js\nconsole.log("copy me");\n```',
+    '~~~js\nconsole.log("copy me");\n~~~',
+    '    console.log("copy me");',
+  ]
+  await $.session.start({ cwd: '/', surface: 'desktop', isInteractive: false })
+  await $.turn.start({ text: 'go', turnId: 'links' })
+  await say($, 'links-final', cases[0]!)
+  await $.turn.complete({ answer: cases[0]!, durationMs: 5, isAborted: false, turnId: 'links', reason: 'answer' })
+
+  for (const body of cases) {
+    const props = { text: body, isFirstOfReply: true, onScreen: null }
+    for (const surface of SURFACES) {
+      const answer = await $.ui.mount({ plugin: 'for-your-eyes', surface, component: 'AssistantMessage',
+        requestId: 'links-final', props })
+      if (surface === 'terminal') {
+        expect(await answer.drawn()).toMatchObject({ type: 'Box',
+          props: { borderStyle: 'round', backgroundColor: 'memoryBackgroundColor' },
+          children: [{ type: 'engine', ref: 0 }] })
+      } else {
+        // Exact equality catches even an otherwise harmless-looking wrapper:
+        // that wrapper makes Desktop move the response into a plugin slot.
+        expect(await answer.drawn()).toEqual({ type: 'engine', ref: 0 })
+      }
+      expect(received).toEqual(props)
+      await answer.unmount()
+    }
+  }
 })
 
 test('summary rows are never restyled, even when their id matches an answer', SLOW, async ($, on) => {

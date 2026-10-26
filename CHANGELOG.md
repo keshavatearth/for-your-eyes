@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.4.1 — 2026-10-26
+
+- Leave remote answers containing links, inline/fenced/indented code, or bare URLs/paths at Claude’s original render site, with no border or other wrapper. This is a compatibility safeguard for file references falling back to inline code and related native interaction problems.
+- Preserve Markdown and link targets exactly, including spaces, percent-encoded paths, relative paths, and line anchors. Keep borders on plain-text remote answers and all terminal final answers.
+- Add regression cases for file references, web links, images, code blocks, and Windows paths across all four render surfaces. Automated checks verify the render contract, not desktop click behavior.
+
 ## 0.4.0 — 2026-10-17
 
 - Rename the mod, command, and repository to **For Your Eyes** (`for-your-eyes`).
