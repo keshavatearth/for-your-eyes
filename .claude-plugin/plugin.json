@@ -1,7 +1,7 @@
 {
   "name": "for-your-eyes",
-  "version": "0.4.1",
-  "description": "Put the final answer in focus. Frame final answers while leaving remote links and code in Claude’s native rendering.",
+  "version": "0.4.0",
+  "description": "Put the final answer in focus. A rounded border highlights each turn’s final answer while preserving native interactions.",
   "author": {
     "name": "Keshav"
   },
