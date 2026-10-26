@@ -8,7 +8,7 @@ const answerTurn = atom({ plugin: 'for-your-eyes', key: 'answerTurn' } as const,
 
 const COMMAND = 'for-your-eyes'
 // The manifest's version, recorded with each load.
-const VERSION = '0.4.0'
+const VERSION = '0.4.2'
 
 // Theme keys keep the outline readable in light and dark modes.
 // Desktop uses an unfilled outline: a background on the shadow-tree wrapper

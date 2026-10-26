@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.4.2 — 2026-10-26
+
+- Restore the v0.4.0 rendering behavior, including borders on answers containing links or code.
+- Withdraw v0.4.1’s speculative wrapper bypass. Its link-failure diagnosis was not reproduced before release, and the bypass removed highlighting from most answers.
+
+## 0.4.1 — 2026-10-26 (superseded)
+
+- Skipped remote borders for answers containing links, code, or paths. This workaround was published without establishing that the mod caused the reported file-link problem. Use v0.4.2 instead.
+
 ## 0.4.0 — 2026-10-17
 
 - Rename the mod, command, and repository to **For Your Eyes** (`for-your-eyes`).
